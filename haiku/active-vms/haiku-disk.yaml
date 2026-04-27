@@ -9,3 +9,4 @@ spec:
   source:
     gcs:
       url: gs://living-on-the-edge-vm-disk-images/haiku.raw
+      # forced retry
