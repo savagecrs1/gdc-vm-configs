@@ -1,0 +1,61 @@
+apiVersion: vm.cluster.gke.io/v1
+kind: VirtualMachine
+metadata:
+  name: haiku
+  namespace: vms
+spec:
+  autoRestartOnConfigurationChange: true
+  osType: Windows
+  compute:
+    cpu:
+      vcpus: 2
+    memory:
+      capacity: 8Gi
+  disks:
+  - boot: true
+    driver: sata
+    virtualMachineDiskName: haiku-boot
+    autoDelete: false
+  # - virtualMachineDiskName: haiku-iso
+  interfaces:
+  - default: true
+    name: eth0
+    # model: e1000
+    networkName: pod-network
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: remote-access-to-haiku
+  namespace: vms
+spec:
+  type: ClusterIP
+  ports:
+  - name: ssh
+    port: 22
+    protocol: TCP
+    targetPort: 22
+  - name: vnc
+    port: 5900
+    protocol: TCP
+    targetPort: 5900
+  selector:
+    kubevirt/vm: haiku
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: haiku-webserver
+  namespace: vms
+  # annotations:
+  #   metallb.universe.tf/loadBalancerIPs: 10.223.172.246
+spec:
+  type: LoadBalancer
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    kubevirt/vm: haiku

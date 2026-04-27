@@ -1,0 +1,63 @@
+apiVersion: kubevirt.io/v1
+kind: VirtualMachineInstance
+metadata:
+  name: windowsxp
+  namespace: vms
+spec:
+  domain:
+    firmware:
+      bootloader:
+        bios: {}
+    cpu:
+      cores: 1
+      model: host-model
+      sockets: 1
+      threads: 1
+    # machine:
+    #   type: pc-q35
+    devices:
+      useVirtioTransitional: true
+      disks:
+      - name: disk0
+        bootOrder: 1
+        disk:
+          bus: scsi
+        serial: windowsxp-boot
+      interfaces:
+      - macAddress: f8:8f:ca:00:00:01
+        masquerade: {}
+        name: eth0
+    features:
+      acpi:
+        enabled: false
+    resources:
+      requests:
+        memory: 2G
+  evictionStrategy: LiveMigrate
+  networks:
+  - name: eth0
+    pod: {}
+  volumes:
+  - dataVolume:
+      name: windowsxp-boot
+    name: disk0
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: remote-access-to-windowsxp
+  namespace: vms
+spec:
+  type: ClusterIP
+  ports:
+  - name: rdp-tcp
+    port: 3389
+    protocol: TCP
+    targetPort: 3389
+  - name: rdp-udp
+    port: 3389
+    protocol: UDP
+    targetPort: 3389
+  selector:
+    vm.kubevirt.io/name: windowsxp

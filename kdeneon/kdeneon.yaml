@@ -1,0 +1,53 @@
+apiVersion: vm.cluster.gke.io/v1
+kind: VirtualMachine
+metadata:
+  name: kdeneon
+  namespace: vms
+spec:
+  osType: Linux
+  compute:
+    cpu:
+      vcpus: 8
+    memory:
+      capacity: 16Gi
+  disks:
+  - boot: true
+    driver: virtio
+    virtualMachineDiskName: kdeneon
+  interfaces:
+  - name: eth0
+    networkName: pod-network
+    default: true
+  # - name: eth1
+  #   networkName: vlan-500
+  #   ipAddresses:
+  #     - 172.16.10.3/24
+  #   default: false
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: remote-access-to-kdeneon
+  namespace: vms
+spec:
+  # type: LoadBalancer
+  ports:
+  - name: rdp-tcp
+    port: 3389
+    protocol: TCP
+    targetPort: 3389
+  - name: rdp-udp
+    port: 3389
+    protocol: UDP
+    targetPort: 3389
+  - name: ssh
+    port: 22
+    protocol: TCP
+    targetPort: 22
+  - name: vnc
+    port: 5900
+    protocol: TCP
+    targetPort: 5900
+  selector:
+    kubevirt/vm: kdeneon

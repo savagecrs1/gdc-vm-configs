@@ -1,0 +1,46 @@
+apiVersion: vm.cluster.gke.io/v1
+kind: VirtualMachine
+metadata:
+  name: windows10
+  namespace: vms
+spec:
+  osType: Windows
+  autoRestartOnConfigurationChange: true
+  compute:
+    cpu:
+      vcpus: 4
+    memory:
+      capacity: 8Gi
+  disks:
+  - boot: true
+    driver: virtio
+    virtualMachineDiskName: windows10-boot
+  interfaces:
+  - name: eth0
+    default: true
+    networkName: pod-network
+  # - name: eth1
+  #   networkName: vlan-500
+  #   ipAddresses:
+  #     - 172.16.10.2/24
+  #   default: false
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: remote-access-to-windows10
+  namespace: vms
+spec:
+  type: ClusterIP
+  ports:
+  - name: rdp-tcp
+    port: 3389
+    protocol: TCP
+    targetPort: 3389
+  - name: rdp-udp
+    port: 3389
+    protocol: UDP
+    targetPort: 3389
+  selector:
+    kubevirt/vm: windows10

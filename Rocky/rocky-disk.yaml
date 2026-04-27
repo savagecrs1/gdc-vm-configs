@@ -1,0 +1,11 @@
+apiVersion: vm.cluster.gke.io/v1
+kind: VirtualMachineDisk
+metadata:
+  name: rocky-disk
+  namespace: vms
+spec:
+  size: 20Gi
+  storageClassName: local-shared
+  source:
+    http:
+      url: "https://dl.rockylinux.org/pub/rocky/9/images/x86_64/Rocky-9-GenericCloud-Base.latest.x86_64.qcow2"
