@@ -11,4 +11,4 @@ spec:
       # Use your coworker's bucket URL here
       url: gs://living-on-the-edge-vm-disk-images/haiku.raw
       # This tells it to use the KSA we are about to create
-      serviceAccount: gem-vm-puller 
+      serviceAccount: ksa-vm-puller 
