@@ -8,7 +8,5 @@ spec:
   storageClassName: local-shared
   source:
     gcs:
-      # Use your coworker's bucket URL here
       url: gs://living-on-the-edge-vm-disk-images/haiku.raw
-      # This tells it to use the KSA we are about to create
       serviceAccount: ksa-vm-puller 
