@@ -1,7 +1,0 @@
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: ksa-vm-puller
-  namespace: vms
-  annotations:
-    iam.gke.io/gcp-service-account: gem-vm-puller@core-edge-dm1.iam.gserviceaccount.com
