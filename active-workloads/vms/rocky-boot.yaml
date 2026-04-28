@@ -8,6 +8,6 @@ spec:
   storageClassName: local-shared
   source:
     gcs:
-      url: gs://chris-vm-images-1777379240/rocky10.qcow2
+      url:  gs://chris-vm-images-1777379240/Rocky-10-GenericCloud-Base.latest.aarch64.qcow2
       serviceAccount: ksa-vm-puller
 
