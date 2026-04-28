@@ -1,0 +1,60 @@
+apiVersion: vm.cluster.gke.io/v1
+kind: VirtualMachine
+metadata:
+  name: rocky
+  namespace: vms
+spec:
+  autoRestartOnConfigurationChange: true
+  osType: Linux
+  compute:
+    cpu:
+      vcpus: 2
+    memory:
+      capacity: 8Gi
+  disks:
+  - boot: true
+    driver: virtio
+    virtualMachineDiskName: rocky-boot
+    autoDelete: false
+  # - virtualMachineDiskName: rocky-iso
+  interfaces:
+  - default: true
+    name: eth0
+    # model: virtio
+    networkName: pod-network
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: remote-access-to-rocky
+  namespace: vms
+spec:
+  type: ClusterIP
+  ports:
+  - name: ssh
+    port: 22
+    protocol: TCP
+    targetPort: 22
+  - name: vnc
+    port: 5900
+    protocol: TCP
+    targetPort: 5900
+  selector:
+    kubevirt/vm: rocky
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rocky-webserver
+  namespace: vms
+  # annotations:
+  #   metallb.universe.tf/loadBalancerIPs: 10.223.172.246
+spec:
+  type: LoadBalancer
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    kubevirt/vm: rocky
