@@ -32,9 +32,14 @@ data:
           cloudInitNoCloud:
             userData: |-
               #cloud-config
-              user: rocky
-              password: password123
-              chpasswd: { expire: False }
+              users:
+                - name: rocky
+                  sudo: ALL=(ALL) NOPASSWD:ALL
+                  shell: /bin/bash
+              chpasswd:
+                list: |
+                  rocky:password123
+                expire: False
               ssh_pwauth: True
               write_files:
                 - path: /var/lib/cloud/scripts/per-boot/01-network-ssh-fix.sh
