@@ -71,6 +71,8 @@ spec:
     driver: virtio
     virtualMachineDiskName: rocky-boot
     autoDelete: false
+  - driver: virtio
+    virtualMachineDiskName: cloudinitdisk
   interfaces:
   - default: true
     name: eth0
