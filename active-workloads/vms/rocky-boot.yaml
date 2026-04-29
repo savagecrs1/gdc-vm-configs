@@ -1,0 +1,86 @@
+apiVersion: vm.cluster.gke.io/v1
+kind: VirtualMachineDisk
+metadata:
+  name: rocky-boot
+  namespace: vms
+spec:
+  size: 20Gi
+  source:
+    http:
+      url: "https://storage.googleapis.com/chris-vm-images-1777379240/Rocky-10-GenericCloud-Base.latest.x86_64.qcow2"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rocky-virtspec
+  namespace: vms
+data:
+  virtSpec: |
+    template:
+      spec:
+        domain:
+          devices:
+            disks:
+            - disk:
+                bus: virtio
+              name: cloudinitdisk
+        volumes:
+        - name: cloudinitdisk
+          cloudInitNoCloud:
+            userData: |-
+              #cloud-config
+              user: rocky
+              password: password123
+              chpasswd: { expire: False }
+              ssh_pwauth: True
+              write_files:
+                - path: /var/lib/cloud/scripts/per-boot/01-network-ssh-fix.sh
+                  permissions: '0755'
+                  content: |
+                    #!/bin/bash
+                    nmcli connection add type ethernet con-name enp1s0 ifname enp1s0 ipv4.method auto || true
+                    nmcli connection up enp1s0
+                    ssh-keygen -A
+                    systemctl restart sshd
+---
+apiVersion: vm.cluster.gke.io/v1
+kind: VirtualMachine
+metadata:
+  name: rocky
+  namespace: vms
+  annotations:
+    vm.cluster.gke.io/virt-spec-configmap: rocky-virtspec
+spec:
+  autoRestartOnConfigurationChange: true
+  osType: Linux
+  compute:
+    cpu:
+      vcpus: 2
+    memory:
+      capacity: 8Gi
+  disks:
+  - boot: true
+    driver: virtio
+    virtualMachineDiskName: rocky-boot
+    autoDelete: false
+  interfaces:
+  - default: true
+    name: eth0
+    networkName: pod-network
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rocky-nodeport
+  namespace: vms
+spec:
+  type: NodePort
+  selector:
+    kubevirt.io/domain: rocky
+  ports:
+  - name: ssh
+    port: 22
+    targetPort: 22
+  - name: http
+    port: 80
+    targetPort: 80
