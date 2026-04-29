@@ -7,9 +7,10 @@ spec:
   size: 20Gi
   storageClassName: local-shared
   source:
-    http:
-      url: "https://storage.googleapis.com/chris-vm-images-1777379240/Rocky-10-GenericCloud-Base.latest.x86_64.qcow2"
-      secretRef: gcs-credentials
+    gcs:
+      url: "gs://chris-vm-images-1777379240/Rocky-10-GenericCloud-Base.latest.x86_64.qcow2"
+      serviceAccount: ksa-vm-puller
+      secretRef: gcs-secret
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -65,8 +66,8 @@ spec:
     driver: virtio
     virtualMachineDiskName: rocky-boot
     autoDelete: false
-  - virtualMachineDiskName: cloudinitdisk
-    driver: virtio
+  - driver: virtio
+    virtualMachineDiskName: cloudinitdisk
   interfaces:
   - default: true
     name: eth0
