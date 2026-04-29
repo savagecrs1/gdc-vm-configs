@@ -22,6 +22,15 @@ data:
               password: password123
               chpasswd: { expire: False }
               ssh_pwauth: True
+              write_files:
+                - path: /var/lib/cloud/scripts/per-boot/01-network-ssh-fix.sh
+                  permissions: '0755'
+                  content: |
+                    #!/bin/bash
+                    nmcli connection add type ethernet con-name enp1s0 ifname enp1s0 ipv4.method auto || true
+                    nmcli connection up enp1s0
+                    ssh-keygen -A
+                    systemctl restart sshd
 ---
 apiVersion: vm.cluster.gke.io/v1
 kind: VirtualMachine
