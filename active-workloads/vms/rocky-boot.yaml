@@ -79,12 +79,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: rocky-nodeport
+  name: rocky-loadbalancer
   namespace: vms
 spec:
-  type: NodePort
+  type: LoadBalancer
   selector:
-    kubevirt.io/domain: rocky
+    kubevirt/vm: rocky
   ports:
   - name: ssh
     port: 22
