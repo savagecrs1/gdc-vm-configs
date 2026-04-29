@@ -9,6 +9,7 @@ spec:
   source:
     http:
       url: "https://storage.googleapis.com/chris-vm-images-1777379240/Rocky-10-GenericCloud-Base.latest.x86_64.qcow2"
+      secretRef: gcs-credentials
 ---
 apiVersion: v1
 kind: ConfigMap
