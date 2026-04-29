@@ -38,7 +38,7 @@ data:
                   shell: /bin/bash
               chpasswd:
                 list: |
-                  rocky:password123
+                  rocky:$1$ZL.5G2J7$Qw5yJ.Pia8iIIi8xsjZc51
                 expire: False
               ssh_pwauth: True
               write_files:
