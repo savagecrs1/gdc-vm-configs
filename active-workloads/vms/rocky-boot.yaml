@@ -70,4 +70,5 @@ spec:
     protocol: TCP
     targetPort: 80
   selector:
-    kubevirt/vm: rocky
+    kubevirt.io/domain: rocky
+
