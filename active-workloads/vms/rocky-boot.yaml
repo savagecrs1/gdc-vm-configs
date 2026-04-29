@@ -55,11 +55,6 @@ spec:
   interfaces:
   - default: true
     name: eth0
-    ports:
-    - name: ssh
-      port: 22
-    - name: http
-      port: 80
     networkName: pod-network
 ---
 apiVersion: v1
@@ -78,5 +73,4 @@ spec:
   - name: http
     port: 80
     targetPort: 80
-
 
