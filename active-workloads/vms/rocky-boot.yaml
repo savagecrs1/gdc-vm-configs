@@ -9,7 +9,8 @@ spec:
   source:
     gcs:
       url: "gs://chris-vm-images-1777379240/Rocky-10-GenericCloud-Base.latest.x86_64.qcow2"
-      serviceAccount: ksa-vm-puller
+      #serviceAccount: ksa-vm-puller
+      secretRef: gcs-secret
 ---
 apiVersion: v1
 kind: ConfigMap
